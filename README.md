@@ -7,7 +7,6 @@ A Maya script for importing MMD models into Maya and exporting Maya-built models
 - **MMD → Maya**: Import `.pmx`, `.pmd`, and `.x` model files into Maya, with optional bone, blend shape, and material creation
 - **Maya → MMD**: Export Maya meshes back to `.pmx` format
 - **Human IK Manager**: Automatically define and map MMD joints to Maya's Human IK system
-- **English bone names**: All imported joints use **League of Legends-style naming** (`L_Shoulder`, `R_Hand`, `Spine1`, `Pelvis`, etc.)
 - **Smart name translation**: Unknown custom bones (hair, skirt, accessories, physics) are decomposed and translated component-by-component (e.g. `kamihidari1` → `L_Hair1`, `sukaatousiro1` → `SkirtBack1`)
 
 ## Supported Maya Versions
@@ -56,6 +55,6 @@ mmdpaimaya.run()
 
 - **Author**: [phyblas](https://qiita.com/phyblas)
 - **Original guide** (Japanese): https://qiita.com/phyblas/items/e5fe203c955e273b26a4
-- **This fork adds**: English UI, LoL-style bone renaming, component-based name translation
+- **This fork adds**: English UI, component-based name translation
 
 ![](https://phyblas.hinaboshi.com/rup/yami/2018/a04.jpg)
