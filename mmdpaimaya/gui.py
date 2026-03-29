@@ -41,7 +41,7 @@ class Natanglak(QWidget):
         self.btn_mmdmaya.clicked.connect(lambda: self.poet_pit_natang('mmdmaya'))
         self.btn_mmdmaya.setFixedSize(320,45)
 
-        self.btn_hik = QPushButton('Human IKの管理')
+        self.btn_hik = QPushButton('Manage Human IK')
         vbl.addWidget(self.btn_hik)
         self.btn_hik.clicked.connect(lambda: self.poet_pit_natang('humanik'))
         self.btn_hik.setFixedSize(320,30)
@@ -85,7 +85,7 @@ class Natang_mmdmaya(QWidget):
         self.setAcceptDrops(True)
         self.parent = parent
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.setWindowTitle('~ MMD > Maya ~')
+        self.setWindowTitle('~ MMD > Maya (Import) ~')
         self.setStyleSheet('font-size: 15px; color: #ddf;')
         vbl = QVBoxLayout()
         self.setLayout(vbl)
@@ -111,7 +111,7 @@ class Natang_mmdmaya(QWidget):
 
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
-        hbl.addWidget(QLabel('ファイル'))
+        hbl.addWidget(QLabel('File'))
         self.le_chue_file = QLineEdit(chue_tem_file)
         hbl.addWidget(self.le_chue_file)
         self.le_chue_file.setFixedWidth(300)
@@ -122,7 +122,7 @@ class Natang_mmdmaya(QWidget):
 
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
-        hbl.addWidget(QLabel('尺度'))
+        hbl.addWidget(QLabel('Scale'))
         self.le_satsuan = QLineEdit(satsuan)
         hbl.addWidget(self.le_satsuan)
         self.le_satsuan.setFixedWidth(100)
@@ -130,21 +130,21 @@ class Natang_mmdmaya(QWidget):
         hbl.addWidget(QLabel('×'))
         hbl.addStretch()
 
-        self.cb_yaek_poly = QCheckBox('材質ごとにポリゴンを分割する')
+        self.cb_yaek_poly = QCheckBox('Separate polygons by material')
         vbl.addWidget(self.cb_yaek_poly)
 
-        self.cb_ao_kraduk = QCheckBox('骨も作る')
+        self.cb_ao_kraduk = QCheckBox('Create bones')
         vbl.addWidget(self.cb_ao_kraduk)
 
-        self.cb_ao_bs = QCheckBox('ブレンドシェープも作る')
+        self.cb_ao_bs = QCheckBox('Create blend shapes')
         vbl.addWidget(self.cb_ao_bs)
 
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
-        hbl.addWidget(QLabel('材質'))
+        hbl.addWidget(QLabel('Material'))
         self.cbb_watsadu = QComboBox()
         hbl.addWidget(self.cbb_watsadu)
-        self.cbb_watsadu.addItem('無い')
+        self.cbb_watsadu.addItem('None')
         self.cbb_watsadu.addItem('blinn')
         self.cbb_watsadu.addItem('phong')
         self.cbb_watsadu.addItem('lambert')
@@ -154,12 +154,12 @@ class Natang_mmdmaya(QWidget):
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
         hbl.addStretch()
-        self.btn_roem_sang = QPushButton('作成開始')
+        self.btn_roem_sang = QPushButton('Start Import')
         hbl.addWidget(self.btn_roem_sang)
         self.btn_roem_sang.clicked.connect(self.roem_sang)
         self.btn_roem_sang.setFixedSize(220,50)
         self.chue_thuk_kae(self.le_chue_file.text())
-        self.cb_pit = QCheckBox('終わったらこの\nウィンドウを閉じる')
+        self.cb_pit = QCheckBox('Close window\nwhen done')
         hbl.addWidget(self.cb_pit)
 
         self.cb_yaek_poly.setChecked(yaek_poly)
@@ -218,13 +218,13 @@ class Natang_mmdmaya(QWidget):
 
         pit_mai = self.cb_pit.isChecked() # 今回使った設定を保存しておく
         with open(self.file_khatangton,'w',encoding='utf-8') as f:
-            f.write('ファイルの名前 = %s\n'%chue_tem_file)
-            f.write('尺度 = %f\n'%satsuan)
-            f.write('ポリゴンの分割 = %d\n'%yaek_poly)
-            f.write('ブレンドシェープ = %d\n'%ao_bs)
-            f.write('ジョイント = %d\n'%ao_kraduk)
-            f.write('材質 = %d\n'%watsadu)
-            f.write('閉じる = %d\n'%pit_mai)
+            f.write('file = %s\n'%chue_tem_file)
+            f.write('scale = %f\n'%satsuan)
+            f.write('separate_poly = %d\n'%yaek_poly)
+            f.write('blend_shapes = %d\n'%ao_bs)
+            f.write('joints = %d\n'%ao_kraduk)
+            f.write('material = %d\n'%watsadu)
+            f.write('close = %d\n'%pit_mai)
 
         if(pit_mai): # 終わったらこのウィンドウを閉じる
             self.close()
@@ -245,7 +245,7 @@ class Natang_humanik(QWidget):
         QWidget.__init__(self)
         self.parent = parent
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.setWindowTitle('~ Human IK管理 ~')
+        self.setWindowTitle('~ Human IK Manager ~')
         self.setStyleSheet('font-size: 15px; color: #ddf;')
         self.resize(450,350)
         vbl = QVBoxLayout()
@@ -255,7 +255,7 @@ class Natang_humanik(QWidget):
         self.cbb_poly = QComboBox()
         hbl.addWidget(self.cbb_poly)
         self.cbb_poly.setEditable(True)
-        self.btn_hikdef = QPushButton('定義')
+        self.btn_hikdef = QPushButton('Define')
         hbl.addWidget(self.btn_hikdef)
         self.btn_hikdef.setFixedWidth(60)
         self.btn_hikdef.clicked.connect(self.hikdef)
@@ -274,7 +274,7 @@ class Natang_humanik(QWidget):
         self.vbl = QVBoxLayout()
         self.wdg.setLayout(self.vbl)
 
-        self.btn_sang_hik = QPushButton('コントロールリグの作成')
+        self.btn_sang_hik = QPushButton('Create Control Rig')
         vbl.addWidget(self.btn_sang_hik)
         self.btn_sang_hik.clicked.connect(self.hikcori)
         self.btn_sang_hik.setEnabled(False)
@@ -290,7 +290,7 @@ class Natang_humanik(QWidget):
                 chue_nod_kho_nok = chue_nod_poly+'_subetenooya'
 
         if(not chue_nod_kho_nok):
-            QMessageBox.about(self,'何か間違いかも','該当のジョイントが見つかりません')
+            QMessageBox.about(self,'Error','Target joint not found')
             return
 
         self.wdg.setFixedSize(600,2000)
@@ -326,7 +326,7 @@ class Natang_humanik(QWidget):
             if(lek in dic_chue): # ノードわ見つけた場合
                 mel.eval('hikSetCharacterObject %s %s %d 0'%(dic_chue[lek],chue_nod_hik,lek))
 
-                btn = QPushButton('選択') # 押したらそのノードが選択されるというボタン
+                btn = QPushButton('Select') # button to select this node
                 hbl.addWidget(btn)
                 btn.setFixedSize(50,30)
 
@@ -335,8 +335,8 @@ class Natang_humanik(QWidget):
                 btn.clicked.connect((lambda x: (lambda: mc.select(x.text())))(le))
                 le.setFixedWidth(400)
                 le.setStyleSheet('font-size: 12px; color: #ffe;')
-            else: # ノードが見つからなかった場合
-                lb = QLabel('見つかりません')
+            else: # node not found
+                lb = QLabel('Not found')
                 hbl.addWidget(lb)
                 lb.setFixedWidth(400)
                 lb.setStyleSheet('color: #fab;')
@@ -367,7 +367,7 @@ class Natang_mayammd(QWidget):
         QWidget.__init__(self)
         self.parent = parent
         self.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.setWindowTitle('~ Maya > MMD ~')
+        self.setWindowTitle('~ Maya > MMD (Export) ~')
         self.setStyleSheet('font-size: 15px; color: #ddf;')
         vbl = QVBoxLayout()
         self.setLayout(vbl)
@@ -395,7 +395,7 @@ class Natang_mayammd(QWidget):
 
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
-        hbl.addWidget(QLabel('ファイル'))
+        hbl.addWidget(QLabel('File'))
         self.le_chue_file = QLineEdit(chue_tem_file)
         hbl.addWidget(self.le_chue_file)
         self.le_chue_file.setFixedWidth(300)
@@ -406,7 +406,7 @@ class Natang_mayammd(QWidget):
 
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
-        hbl.addWidget(QLabel('尺度'))
+        hbl.addWidget(QLabel('Scale'))
         self.le_satsuan = QLineEdit(satsuan)
         hbl.addWidget(self.le_satsuan)
         self.le_satsuan.setFixedWidth(100)
@@ -414,30 +414,30 @@ class Natang_mayammd(QWidget):
         hbl.addWidget(QLabel('×'))
         hbl.addStretch()
 
-        self.cb_chai_kraduk = QCheckBox('骨も作る')
+        self.cb_chai_kraduk = QCheckBox('Export bones')
         vbl.addWidget(self.cb_chai_kraduk)
         self.cb_chai_kraduk.setChecked(chai_kraduk)
 
-        self.cb_chai_bs = QCheckBox('モーフも作る')
+        self.cb_chai_bs = QCheckBox('Export morphs')
         vbl.addWidget(self.cb_chai_bs)
         self.cb_chai_bs.setChecked(chai_bs)
 
-        self.cb_chai_watsadu = QCheckBox('材質を使う')
+        self.cb_chai_watsadu = QCheckBox('Use materials')
         vbl.addWidget(self.cb_chai_watsadu)
         self.cb_chai_watsadu.setChecked(chai_watsadu)
 
-        self.cb_lok_tex = QCheckBox('テクスチャファイルをコピーする')
+        self.cb_lok_tex = QCheckBox('Copy texture files')
         vbl.addWidget(self.cb_lok_tex)
         self.cb_lok_tex.setChecked(lok_tex)
 
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
-        hbl.addWidget(QLabel('使うポリゴン'))
+        hbl.addWidget(QLabel('Polygons to export'))
         self.btng = QButtonGroup()
-        self.rb_thangmot = QRadioButton('全部')
+        self.rb_thangmot = QRadioButton('All')
         hbl.addWidget(self.rb_thangmot)
         self.btng.addButton(self.rb_thangmot)
-        self.rb_thilueak = QRadioButton('選択されている')
+        self.rb_thilueak = QRadioButton('Selected only')
         hbl.addWidget(self.rb_thilueak)
         self.btng.addButton(self.rb_thilueak)
         hbl.addStretch()
@@ -450,12 +450,12 @@ class Natang_mayammd(QWidget):
         hbl = QHBoxLayout()
         vbl.addLayout(hbl)
         hbl.addStretch()
-        self.btn_roem_sang = QPushButton('作成開始')
+        self.btn_roem_sang = QPushButton('Start Export')
         hbl.addWidget(self.btn_roem_sang)
         self.btn_roem_sang.clicked.connect(self.roem_sang)
         self.btn_roem_sang.setFixedSize(220,50)
         self.chue_thuk_kae(self.le_chue_file.text())
-        self.cb_pit = QCheckBox('終わったらこの\nウィンドウを閉じる')
+        self.cb_pit = QCheckBox('Close window\nwhen done')
         hbl.addWidget(self.cb_pit)
         self.cb_pit.setChecked(pit_mai)
 
@@ -495,14 +495,14 @@ class Natang_mayammd(QWidget):
 
         pit_mai = self.cb_pit.isChecked()
         with open(self.file_khatangton,'w',encoding='utf-8') as f:
-            f.write('ファイルの名前 = %s\n'%chue_tem_file)
-            f.write('尺度 = %f\n'%satsuan)
-            f.write('ブレンドシェープ = %d\n'%chai_bs)
-            f.write('ジョイント = %d\n'%chai_kraduk)
-            f.write('材質 = %d\n'%chai_watsadu)
-            f.write('テクスチャのコピー = %d\n'%lok_tex)
-            f.write('ポリゴン全部 = %d\n'%thangmot)
-            f.write('閉じる = %d\n'%pit_mai)
+            f.write('file = %s\n'%chue_tem_file)
+            f.write('scale = %f\n'%satsuan)
+            f.write('blend_shapes = %d\n'%chai_bs)
+            f.write('joints = %d\n'%chai_kraduk)
+            f.write('material = %d\n'%chai_watsadu)
+            f.write('copy_textures = %d\n'%lok_tex)
+            f.write('all_polygons = %d\n'%thangmot)
+            f.write('close = %d\n'%pit_mai)
 
         if(pit_mai):
             self.close()

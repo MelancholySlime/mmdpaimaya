@@ -2,13 +2,14 @@
 import os,math,itertools,time,re
 from . import mmdio
 from .asset.jaka import romaji
+from .asset.bone_names import to_english
 import maya.cmds as mc
 import maya.api.OpenMaya as om
 import maya.api.OpenMayaAnim as oma
 
 def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsadu=1):
     t_roem = time.time() # 開始
-    print('モデルインポート開始')
+    print('Starting model import')
     
     sakun = os.path.splitext(chue_tem_file)[1] # 拡張子
     
@@ -20,10 +21,10 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
         elif(sakun=='.x'):
             pmx_model = mmdio.xxx.load2pmx(chue_tem_file)
         else:
-            print('pmxとpmdとxファイルしか使用できません')
+            print('Only .pmx, .pmd, and .x files are supported')
             raise
     except:
-        print('モデルに何か問題があって、ファイルの読み込みは失敗です')
+        print('There was a problem with the model; failed to load file')
         raise
     
     chue_nod_model = romaji(pmx_model.name) # モデルの名前をロマジに変換してモデルのノードの名前にする
@@ -36,7 +37,7 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
     while(mc.objExists(chue_nod_model)):
         chue_nod_model += '_'
     
-    print('ポリゴン作成')
+    print('Creating polygon mesh')
     if(yaek_poly): # ポリゴンを分割する場合、今まだ何もしなくていい
         lis_chue_nod_poly_mat = []
     else:
@@ -140,7 +141,7 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
             mc.setAttr(chue_nod_mat+'.base',1)
         
         # 日本語の名前も一応収めておく
-        mc.addAttr(chue_nod_mat,longName='namae',niceName='名前',dataType='string')
+        mc.addAttr(chue_nod_mat,longName='namae',niceName='Original Name',dataType='string')
         mc.setAttr(chue_nod_mat+'.namae',mat.name,typ='string')
         if(i_tex>=0):
             chue_nod_file = lis_chue_nod_file[i_tex]
@@ -211,7 +212,7 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
     
     
     if(ao_bs and not yaek_poly):
-        print('ブレンドシェープ作成')
+        print('Creating blend shapes')
         # 各パネル（眉、目、口、他）
         lis_chue_nod_poly_bs = [[],[],[],[]] # ブレンドシェープを作るためのポリゴンのノードのリストを収める
         lis_chue_bs_doem = [[],[],[],[]] # 元の名前（日本の名前）を収めるリスト
@@ -247,22 +248,24 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
         mc.delete(lis_chue_nod_poly_bs) # すでにブレンドシェープを作るために使ったポリゴンは用済みだから消す
     
     if(ao_kraduk and not yaek_poly):
-        print('ジョイント作成')
+        print('Creating joints')
         lis_chue_nod_kho = [] # ジョイントの名前を収めるリスト
         for b in pmx_model.bones:
             mc.select(deselect=1)
-            chue_kho = romaji(b.name)
-            loc = b.location # ジョイントの位置
-            # ジョイントの半径
-            if('yubi' in chue_kho): # 指は小さめ
+            chue_kho = to_english(romaji(b.name))
+            loc = b.location # joint position
+            # joint radius
+            if('Finger' in chue_kho or 'Thumb' in chue_kho or 'Index' in chue_kho
+               or 'Middle' in chue_kho or 'Ring' in chue_kho or 'Pinky' in chue_kho
+               or 'yubi' in chue_kho): # fingers are smaller
                 r_kho = satsuan/4
-            elif(chue_kho=='sentaa'): # サンターは大きめ
+            elif(chue_kho in ('Center','sentaa')): # center is larger
                 r_kho = satsuan
-            else: # その他
+            else: # others
                 r_kho = satsuan/2   
             # ジョイントのノードを作成する
             chue_nod_kho = mc.joint(position=[loc[0]*satsuan,loc[1]*satsuan,-loc[2]*satsuan],radius=r_kho,name=chue_nod_poly+ '_'+chue_kho)
-            mc.addAttr(chue_nod_kho,longName='namae',niceName='名前',dataType='string') # 日本語の名前も一応ここに収めておく
+            mc.addAttr(chue_nod_kho,longName='namae',niceName='Original Name',dataType='string') # keep original Japanese name
             mc.setAttr(chue_nod_kho+'.namae',b.name,typ='string')
             
             if(b.isIK or not b.visible): # 表示しないジョイント
@@ -381,8 +384,8 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
             if(chue_nod_kho not in lis_chue_nod_kho_nok):
                 mc.rename(chue_nod_kho,chue_nod_kho.replace(chue_nod_poly+'_',''))
     
-    # 日本語の名前も一応収めておく
-    mc.addAttr(chue_nod_poly,longName='namae',niceName='名前',dataType='string')
+    # keep original Japanese model name as attribute
+    mc.addAttr(chue_nod_poly,longName='namae',niceName='Original Name',dataType='string')
     mc.setAttr(chue_nod_poly+'.namae',pmx_model.name,typ='string')
     
     mc.select(chue_nod_poly)
@@ -396,7 +399,7 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
     except:
         0
 
-    print('モデルインポート完了。%.2f秒かかりました'%(time.time()-t_roem))
+    print('Model import complete. Took %.2f seconds' % (time.time()-t_roem))
     return chue_nod_poly,lis_chue_nod_kho_nok,chue_nod_skin,chue_nod_bs
 
 
@@ -421,8 +424,8 @@ def sang_poly(chue_nod_poly,lis_xyz,lis_index_chut,lis_n_chut_nai_na,lis_u,lis_v
     if(lis_norm):
         fn_mesh.setVertexNormals(lis_norm,om.MIntArray(range(len(lis_xyz))))
 
-    # 一応MMDからのモデルだという情報をポリゴンのノードに刻んでおく
-    mc.addAttr(chue_nod_poly,longName='MMD_model',niceName='MMDからのモデル',attributeType='bool')
+    # mark this polygon node as an MMD-imported model
+    mc.addAttr(chue_nod_poly,longName='MMD_model',niceName='MMD Model',attributeType='bool')
     mc.setAttr(chue_nod_poly+'.MMD_model',True)
     mc.setAttr(chue_nod_poly+'.aiOpaque',0) # arnoldを使う時に不透明度を有効にする
     return chue_nod_poly
