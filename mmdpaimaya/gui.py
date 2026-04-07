@@ -283,8 +283,10 @@ class Natang_humanik(QWidget):
         chue_nod_kho_nok = None
         chue_nod_poly = self.cbb_poly.currentText()
         if(mc.objExists(chue_nod_poly)):
-            # 全ての親のノードを探す
-            if(mc.objExists(chue_nod_poly+'_sentaa')):
+            # find root joint node
+            if(mc.objExists(chue_nod_poly+'_Root')):
+                chue_nod_kho_nok = chue_nod_poly+'_Root'
+            elif(mc.objExists(chue_nod_poly+'_sentaa')):
                 chue_nod_kho_nok = chue_nod_poly+'_sentaa'
             elif(mc.objExists(chue_nod_poly+'_subetenooya')):
                 chue_nod_kho_nok = chue_nod_poly+'_subetenooya'
@@ -326,7 +328,7 @@ class Natang_humanik(QWidget):
             if(lek in dic_chue): # ノードわ見つけた場合
                 mel.eval('hikSetCharacterObject %s %s %d 0'%(dic_chue[lek],chue_nod_hik,lek))
 
-                btn = QPushButton('Select') # button to select this node
+                btn = QPushButton('Select') # select this node
                 hbl.addWidget(btn)
                 btn.setFixedSize(50,30)
 

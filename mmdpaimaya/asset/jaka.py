@@ -27,5 +27,6 @@ def romaji(x):
         x = '_'+x[1:]
     x = re.sub('[一-龥]','_',x)
     x = re.sub('[ก-๙]','_',x)
-    x = re.sub(r'\W','_',x)
+    x = re.sub(r'[^\x00-\x7F]','_',x)  # replace any remaining non-ASCII (hiragana, katakana, etc.)
+    x = re.sub(r'\W','_',x,flags=re.ASCII)
     return x

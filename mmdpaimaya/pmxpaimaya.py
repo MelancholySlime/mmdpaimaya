@@ -140,7 +140,7 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
             mc.setAttr(chue_nod_mat+'.specularRoughness',min(sf*0.01,1))
             mc.setAttr(chue_nod_mat+'.base',1)
         
-        # 日本語の名前も一応収めておく
+        # keep original Japanese name
         mc.addAttr(chue_nod_mat,longName='namae',niceName='Original Name',dataType='string')
         mc.setAttr(chue_nod_mat+'.namae',mat.name,typ='string')
         if(i_tex>=0):
@@ -249,21 +249,20 @@ def sang(chue_tem_file,satsuan=1,yaek_poly=False,ao_bs=True,ao_kraduk=True,watsa
     
     if(ao_kraduk and not yaek_poly):
         print('Creating joints')
-        lis_chue_nod_kho = [] # ジョイントの名前を収めるリスト
+        lis_chue_nod_kho = [] # joint name list
         for b in pmx_model.bones:
             mc.select(deselect=1)
-            chue_kho = to_english(romaji(b.name))
+            chue_kho = to_english(b.name, romaji(b.name))
             loc = b.location # joint position
             # joint radius
-            if('Finger' in chue_kho or 'Thumb' in chue_kho or 'Index' in chue_kho
-               or 'Middle' in chue_kho or 'Ring' in chue_kho or 'Pinky' in chue_kho
-               or 'yubi' in chue_kho): # fingers are smaller
+            finger_keywords = ('Thumb','Index','Middle','Ring','Pinky')
+            if any(kw in chue_kho for kw in finger_keywords) or '指' in b.name:
                 r_kho = satsuan/4
-            elif(chue_kho in ('Center','sentaa')): # center is larger
+            elif chue_kho in ('Root',) or b.name in ('センター','全ての親'):
                 r_kho = satsuan
-            else: # others
+            else:
                 r_kho = satsuan/2   
-            # ジョイントのノードを作成する
+            # create joint node
             chue_nod_kho = mc.joint(position=[loc[0]*satsuan,loc[1]*satsuan,-loc[2]*satsuan],radius=r_kho,name=chue_nod_poly+ '_'+chue_kho)
             mc.addAttr(chue_nod_kho,longName='namae',niceName='Original Name',dataType='string') # keep original Japanese name
             mc.setAttr(chue_nod_kho+'.namae',b.name,typ='string')
